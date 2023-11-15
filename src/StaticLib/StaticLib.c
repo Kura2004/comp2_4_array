@@ -6,6 +6,8 @@
 
 #include "../include/lib_func.h"
 
+#define million 1000000
+
 // my_array を要素数nで初期化する
 void initialize(my_array* ar, int n)
 {
@@ -35,6 +37,37 @@ void release(my_array* ar)
 void resize(my_array* ar, int n)
 {
 	// ToOo:配列の要素数を変更しよう！(reallocは禁止)
+	int* saveaddr;
+	int savenum = ar->num;
+
+	if (savenum <= 0) { // 非正の値が来たら、とりあえず空にする
+		savenum = 0;
+		saveaddr = NULL;
+		return;
+	}
+
+	saveaddr = (int*)malloc(sizeof(int) * savenum);
+	if (saveaddr == NULL) savenum = 0;
+
+	for (int i = 0; i < savenum; i++) {
+
+		if (ar->addr != NULL)
+			saveaddr[i] = ar->addr[i];
+	
+	}
+
+	ar->num = n;
+	ar->addr = (int*)malloc(sizeof(int) * n);
+
+	for (int i = 0; i < savenum; i++) {
+
+		if (saveaddr != NULL)
+			ar->addr[i] = saveaddr[i];
+
+	}
+
+	free(saveaddr);
+	
 }
 
 // my_array のindex番目の要素にvalを設定する
@@ -42,7 +75,12 @@ void resize(my_array* ar, int n)
 bool set(my_array* ar, int index, int val)
 {
 	// ToOo:配列の要素を変更しよう！
-	return false;
+	if (index < 0 || index > ar->num - 1)
+		return false;
+
+	ar->addr[index] = val;
+	return true;
+
 }
 
 // my_array のindex番目の要素を取得する
@@ -50,12 +88,16 @@ bool set(my_array* ar, int index, int val)
 int get(const my_array* ar, int index)
 {
 	// ToOo:要素を所得して、indexがおかしかったら0を返そう
-	return -1;
+	if (index < 0 || index > ar->num - 1)
+		return 0;
+
+	else
+		return ar->addr[index];
 }
 
 // my_array の要素数を取得する
 int size(const my_array* ar)
 {
 	// ToOo: 配列の要素数を返そう
-	return -1;
+	return ar->num;
 }
