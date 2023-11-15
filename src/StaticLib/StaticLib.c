@@ -39,6 +39,7 @@ void resize(my_array* ar, int n)
 	// ToOo:配列の要素数を変更しよう！(reallocは禁止)
 	int* saveaddr;
 	int savenum = ar->num;
+	int transnum = 0;
 
 	if (savenum <= 0) { // 非正の値が来たら、とりあえず空にする
 		savenum = 0;
@@ -57,9 +58,15 @@ void resize(my_array* ar, int n)
 	}
 
 	ar->num = n;
-	ar->addr = (int*)malloc(sizeof(int) * n);
+	ar->addr = (int*)malloc(sizeof(int) * ar->num);
 
-	for (int i = 0; i < savenum; i++) {
+	if (ar->num > savenum)
+		transnum = savenum;
+
+	else if (ar->num < savenum)
+		transnum = ar->num;
+
+	for (int i = 0; i < transnum; i++) {
 
 		if (saveaddr != NULL)
 			ar->addr[i] = saveaddr[i];
